@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "645074304849",
+    "project_id": "lecturapp-39404",
+    "storage_bucket": "lecturapp-39404.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:645074304849:android:08126d7ad0cd3311055d70",
+        "android_client_info": {
+          "package_name": "com.example.lecturaapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXNaTMLHQEFLffz9eEavZhTtjfPIxBxSg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
