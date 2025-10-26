@@ -1,14 +1,16 @@
 package com.example.lecturaapp
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.RecyclerView
 
-class CapitulosActivity : AppCompatActivity() {
+class CapitulosActivity : AppCompatActivity(), CapituloAdapter.OnCapituloClickListener {
+
+    private lateinit var chaptersRecyclerView: RecyclerView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_capitulos)
@@ -16,41 +18,30 @@ class CapitulosActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.title = "Capítulos"
 
-        val tituloLibro = intent.getStringExtra("titulo")
+        val novelaTitulo = intent.getStringExtra("novelaId") ?: "Novela Desconocida"
 
-        val tituloCapitulosTextView: TextView = findViewById(R.id.tituloCapitulosTextView)
-        if (tituloLibro != null) {
-            tituloCapitulosTextView.text = "Capítulos de\n$tituloLibro"
-        } else {
-            tituloCapitulosTextView.text = "Capítulos"
-        }
+        chaptersRecyclerView = findViewById(R.id.chaptersRecyclerView)
+        
+        // Generamos los capítulos de prueba localmente
+        val capitulosDePrueba = createDummyChapters(novelaTitulo)
+        val capituloAdapter = CapituloAdapter(capitulosDePrueba, this)
+        chaptersRecyclerView.adapter = capituloAdapter
+    }
 
-        val capitulosContainer: LinearLayout = findViewById(R.id.capitulosContainer)
-
-        val capitulos = listOf(
-            "Capítulo 1: El inicio de la aventura",
-            "Capítulo 2: El primer encuentro",
-            "Capítulo 3: Un misterio por resolver",
-            "Capítulo 4: La revelación",
-            "Capítulo 5: El plan final"
+    private fun createDummyChapters(novelaId: String): List<Capitulo> {
+        val loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent blandit odio eu enim. Pellentesque sed dui ut augue blandit sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam nibh. Mauris ac mauris sed pede pellentesque fermentum. Maecenas adipiscing ante non diam. Proin sed quam. Sed vahicula, urna ut laoreet tempus, mauris erat consectetuer libero, dapibus desper. Sed vahicula, urna ut laoreet tempus, mauris erat consectetuer libero, dapibus desper."
+        return listOf(
+            Capitulo(id="cap1", nombre="Capítulo 1: El Inicio", novelaId=novelaId, contenido=loremIpsum),
+            Capitulo(id="cap2", nombre="Capítulo 2: La Trama", novelaId=novelaId, contenido=loremIpsum.reversed())
         )
+    }
 
-        for (capitulo in capitulos) {
-            val textView = TextView(this)
-            textView.layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                bottomMargin = 16
-            }
-            textView.text = capitulo
-            textView.textSize = 18f
-            textView.setPadding(16, 16, 16, 16)
-            textView.setBackgroundResource(R.drawable.rounded_textview)
-            capitulosContainer.addView(textView)
-        }
+    override fun onCapituloClick(capitulo: Capitulo) {
+        val intent = Intent(this, LecturaActivity::class.java)
+        intent.putExtra("capitulo", capitulo)
+        startActivity(intent)
     }
 
     override fun onSupportNavigateUp(): Boolean {

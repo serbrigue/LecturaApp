@@ -1,21 +1,20 @@
 package com.example.lecturaapp
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import android.content.Context
+import com.bumptech.glide.Glide
 
 class LibroAdapter(
-    private val libros: List<Libro>,
-    private val listener: OnItemClickListener,
-    private val context: Context
+    private val novelas: List<Novela>,
+    private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<LibroAdapter.LibroViewHolder>() {
 
     interface OnItemClickListener {
-        fun onItemClick(libro: Libro)
+        fun onItemClick(novela: Novela)
     }
 
     class LibroViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -32,30 +31,22 @@ class LibroAdapter(
     }
 
     override fun onBindViewHolder(holder: LibroViewHolder, position: Int) {
-        val libro = libros[position]
-        holder.tituloTextView.text = libro.titulo
-        holder.autorTextView.text = libro.autor
-        holder.portadaImageView.setImageResource(libro.imagen)
+        val novela = novelas[position]
+        holder.tituloTextView.text = novela.titulo
+        holder.autorTextView.text = novela.autor
 
-        // Establecer el estado inicial del ícono de favoritos
-        val favoriteIcon = if (libro.favorito) R.drawable.ic_favorite else R.drawable.ic_favorite_border
-        holder.favoriteButton.setImageResource(favoriteIcon)
+        // Corregido: Usar Glide con la URL de la portada
+        Glide.with(holder.itemView.context)
+            .load(novela.portadaUrl)
+            .placeholder(R.drawable.ic_launcher_background) // Opcional: una imagen mientras carga
+            .into(holder.portadaImageView)
 
-        // Lógica para cambiar el ícono al hacer clic
-        holder.favoriteButton.setOnClickListener {
-            libro.favorito = !libro.favorito // Invertir el estado
-            val newIcon = if (libro.favorito) R.drawable.ic_favorite else R.drawable.ic_favorite_border
-            holder.favoriteButton.setImageResource(newIcon)
+        holder.favoriteButton.visibility = View.GONE
 
-            val message = if (libro.favorito) "Has agregado ${libro.titulo} a favoritos" else "Has quitado ${libro.titulo} de favoritos"
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-        }
-
-        // Lógica para el clic en la tarjeta del libro
         holder.itemView.setOnClickListener {
-            listener.onItemClick(libro)
+            listener.onItemClick(novela)
         }
     }
 
-    override fun getItemCount() = libros.size
+    override fun getItemCount() = novelas.size
 }
