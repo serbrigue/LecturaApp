@@ -2,6 +2,7 @@ package com.example.lecturaapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -33,11 +34,15 @@ class CuentaActivity : AppCompatActivity(), CarruselAdapter.OnItemClickListener 
 
         val tvUserName: TextView = findViewById(R.id.tvUserName)
         val tvUserEmail: TextView = findViewById(R.id.tvUserEmail)
+        val btnLogout: Button = findViewById(R.id.btnLogout)
         rvFavorites = findViewById(R.id.rvFavorites)
         rvRecommendations = findViewById(R.id.rvRecommendations)
 
         val user = auth.currentUser
         if (user == null) {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
             finish()
             return
         }
@@ -49,6 +54,14 @@ class CuentaActivity : AppCompatActivity(), CarruselAdapter.OnItemClickListener 
         rvRecommendations.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         loadFavoritesAndRecommendations()
+
+        btnLogout.setOnClickListener {
+            auth.signOut()
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun loadFavoritesAndRecommendations() {
